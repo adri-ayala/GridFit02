@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
+import backgroundImage from "../assets/login-background.png"; // Import the background image
 
 export default function Login() {
   const [studentID, setStudentID] = useState("");
@@ -40,7 +41,6 @@ export default function Login() {
         } else {
           setError(result.error || "Admin login failed.");
         }
-
       } else if (/^[0-9]{7}$/.test(studentID)) {
         // Student login
         const response = await fetch("http://localhost:5050/api/login", {
@@ -74,12 +74,19 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
+    <div
+      className="flex flex-col items-center justify-center min-h-screen"
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <form
         onSubmit={handleLogin}
-        className="bg-[#333333] bg-opacity-30 p-8 rounded-lg shadow-lg"
+        className="bg-black bg-opacity-40 p-32 w-[700px] rounded-12xl shadow-lg mt-40 mb-6 flex flex-col items-center justify-center"
       >
-        <h1 className="text-2xl font-bold text-white mb-4">Login</h1>
+        <h1 className="text-7xl font-bold text-white mb-16 text-center">Login</h1>
 
         <input
           type="text"

@@ -1,5 +1,5 @@
 import React from "react";
-import backgroundImage from "../assets/background.png"; // Import the background image
+import backgroundImage from "../assets/home-background.png"; // Import the background image
 import PalmOfHand from "../assets/palm-of-hand.png"; // Import the palm-of-hand.png image
 import SNHUCampus from "../assets/snhu-campus.png"; // Import the snhu-campus.png image
 
@@ -22,12 +22,12 @@ export default function Home() {
       >
         {/* First Rectangle */}
         <div
-          className="bg-[#333333] bg-opacity-30 p-12 w-[80%] rounded-2xl shadow-lg text-left mt-10 flex flex-col justify-between"
+          className="bg-black bg-opacity-30 p-12 w-[80%] rounded-2xl shadow-lg text-left mt-10 flex flex-col justify-between"
           style={{
-            height: "600px",
+            height: "500px",
           }}
         >
-          <div className="flex justify-between items-center">
+          <div className="flex justify-start items-center">
             <h1 className="text-5xl font-bold text-white mb-4 leading-relaxed">
               Track your <span className="glow-text">energy</span> and <br />
               <span className="glow-text">charge</span> your{" "}
@@ -37,14 +37,30 @@ export default function Home() {
             <img
               src={PalmOfHand}
               alt="Palm of Hand illustration"
-              className="w-72 h-72 -ml-20 mt-4 aura-effect"
+              className="w-72 h-72 mt-4 aura-effect ml-[70px]" // Added negative margin-left
             />
+          </div>
+          {/* Buttons */}
+          <div className="flex space-x-4 mb-8 mt-6">
+            <a
+              href="/login"
+              className="text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-600 transition"
+              style={{ backgroundColor: "#96e52c" }} // Custom green shade
+            >
+              Connect
+            </a>
+            <a
+              href="/about"
+              className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition"
+            >
+              Our Mission
+            </a>
           </div>
         </div>
 
         {/* Second Rectangle */}
         <div
-          className="bg-[#333333] bg-opacity-30 p-12 w-full rounded-lg shadow-lg text-center mt-40 flex items-start justify-start"
+          className="bg-black bg-opacity-50 p-12 w-full rounded-lg shadow-lg text-center mt-40 flex items-start justify-start"
           style={{
             height: "400px",
           }}
@@ -59,7 +75,15 @@ export default function Home() {
           </div>
           <div className="text-left flex-1 mt-10">
             <h1 className="text-2xl font-bold text-white mb-4">
-              2500 N River Rd, Manchester, NH 03106
+              <a
+                href="https://www.google.com/maps?q=SNHU+Athletic+Complex,+2500+N+River+Rd,+Manchester,+NH+03106"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                SNHU Athletic Complex<br />
+                2500 N River Rd, Manchester, NH 03106
+              </a>
             </h1>
             <p className="text-gray-300">
               Operating Hours: 08:00 - 18:00, Monday - Friday. <br />

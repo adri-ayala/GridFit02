@@ -5,8 +5,12 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      borderRadius: {
+        '12xl': '6rem', // Custom border radius
+      },
+    },
   },
   plugins: [],
-}
+};
 
