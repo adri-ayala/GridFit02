@@ -35,7 +35,7 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-black text-white p-8">
-      <h1 className="text-3xl font-bold text-center mb-6">Admin Dashboard</h1>
+      <h1 className="text-3xl font-bold text-center mb-6 mt-16">Admin Dashboard</h1>
 
       {/* Tab Buttons */}
       <div className="flex justify-center space-x-4 mb-6">
