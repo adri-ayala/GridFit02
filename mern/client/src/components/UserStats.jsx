@@ -179,7 +179,7 @@ export default function UserStats() {
 
         <div className="w-1/3 bg-gray-800 p-4 rounded-lg shadow-lg text-white text-lg ml-4">
           <h2 className="text-xl mb-4">Live Stats</h2>
-          <p>CO₂ Saved: {totalCO2 ? totalCO2.toFixed(4) : "0.0000"} kg</p>
+          <p>CO₂ Saved: {totalCO2 ? totalCO2.toFixed(4) : "0.0000"} g</p>
           <p>Generation Rate: {generationRate ? generationRate.toFixed(2) : "0.00"} W</p>
           <p>Duration: {Math.floor(duration / 60)}m {Math.floor(duration % 60)}s</p>
           <p>Voltage: {liveVoltage !== null ? `${liveVoltage.toFixed(3)} V` : "N/A"}</p>

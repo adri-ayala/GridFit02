@@ -86,7 +86,7 @@ export default function Admin() {
                     <tr key={user.studentId} className="text-center">
                       <td className="px-4 py-2 border border-gray-700">{user.studentId}</td>
                       <td className="px-4 py-2 border border-gray-700">{user.totalWatts} Wh</td>
-                      <td className="px-4 py-2 border border-gray-700">{user.totalCO2.toFixed(4)} kg</td>
+                      <td className="px-4 py-2 border border-gray-700">{user.totalCO2.toFixed(4)} g</td>
                       <td className="px-4 py-2 border border-gray-700">{user.duration} sec</td>
                     </tr>
                   ))}

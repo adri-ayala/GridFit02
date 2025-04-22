@@ -21,7 +21,7 @@ readings_collection = db['Session']
 summary_collection = db['UserStats']
 
 RESISTOR_OHMS = 0.10
-CO2_PER_KWH = 0.707
+G_CO2_PER_WH = 0.707
 
 def initialize_daq(ser):
     commands = ['stop', 'clist', 'encode 0', 'ps 0', 'slist 0 1', 'slist 1 2', 'srate 1000', 'start']
@@ -59,7 +59,8 @@ def main():
     session_id = str(uuid.uuid4())
     start_time = time.time()
     total_energy_wh = 0
-    total_co2_kg = 0
+    total_co2_g = 0
+    total_energy = 0
 
     try:
         print("Waiting for COM3 to become available...")
@@ -91,9 +92,11 @@ def main():
                 if voltage_gen is not None and voltage_shunt is not None:
                     current = voltage_shunt / RESISTOR_OHMS
                     power = voltage_gen * current
-                    energy_wh = power / 3600
-                    total_energy_wh += energy_wh
-                    total_co2_kg = (total_energy_wh / 1000) * CO2_PER_KWH
+                    total_energy += power 
+                    total_energy_wh = total_energy / 3600
+                    total_co2_g = total_energy_wh * G_CO2_PER_WH
+
+                    total_co2_g = total_energy_wh  * G_CO2_PER_WH
                     duration = time.time() - start_time
 
                     payload = {
@@ -101,7 +104,7 @@ def main():
                         "voltage": voltage_gen,
                         "watts": power,
                         "timestamp": datetime.now().isoformat(),
-                        "total_co2": total_co2_kg,
+                        "total_co2": total_co2_g,
                         "generation_rate": (total_energy_wh * 3600 / duration) if duration > 0 else 0,
                         "duration": duration
                     }
@@ -125,7 +128,7 @@ def main():
     summary = {
         "studentId": student_id,
         "totalWatts": round(total_energy_wh, 2),
-        "totalCO2": round(total_co2_kg, 4),
+        "totalCO2": round(total_co2_g, 4),
         "duration": int(duration)
     }
 
