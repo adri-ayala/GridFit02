@@ -1,5 +1,5 @@
 import express from "express";
-import { getDb } from "../db/connection.js"; // Import the database connection
+import { getDb } from "../db/connection.js";
 
 const router = express.Router();
 
@@ -11,14 +11,14 @@ router.get("/", async (req, res) => {
       return res.status(500).send("Database connection not established.");
     }
 
-    const collection = db.collection("UserStats");
+    const collection = db.collection("Users");
 
-    // Fetch top 10 users sorted by watts in descending order
+    // Fetch top 10 users sorted by totalWatts descending
     const leaderboard = await collection
       .find({})
-      .sort({ totalWatts: -1 }) // Sort by watts as a number
+      .sort({ totalWatts: -1 })
       .limit(10)
-      .project({ studentId: 1, totalWatts: 1, _id: 0 })
+      .project({ S_ID: 1, totalWatts: 1, _id: 0 }) // ✅ Fix projection key
       .toArray();
 
     res.status(200).json(leaderboard);

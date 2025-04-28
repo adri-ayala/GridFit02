@@ -18,7 +18,7 @@ SERVER_URL = "http://localhost:5050/api/student/live-data"
 client = MongoClient("mongodb+srv://adrienneayala:Pickles1473@cluster0.mhxjosw.mongodb.net/?retryWrites=true&w=majority&appName=GridFit")
 db = client['GridFit']
 readings_collection = db['Session']
-summary_collection = db['UserStats']
+users_collection = db['Users']  # ✅ Switched from UserStats
 
 RESISTOR_OHMS = 0.10
 G_CO2_PER_WH = 0.707
@@ -63,7 +63,7 @@ def main():
     total_energy = 0
 
     try:
-        print("Waiting for COM3 to become available...")
+        print(f"Waiting for {SERIAL_PORT} to become available...")
         timeout = time.time() + 10
         while True:
             try:
@@ -73,16 +73,18 @@ def main():
                 if time.time() > timeout:
                     print("Port still unavailable after timeout.")
                     return
-                print("Still waiting for COM3...")
+                print(f"Still waiting for {SERIAL_PORT}...")
                 time.sleep(1)
 
         print("Serial port connected.")
         with ser:
             initialize_daq(ser)
 
-            while True:
-                print("DAQ loop is active...")
+            power_readings = []
+            reading_interval = 1  # seconds
+            average_window = 5  # seconds
 
+            while True:
                 if os.path.exists(stop_path):
                     print("Stop signal received. Exiting loop.")
                     os.remove(stop_path)
@@ -92,32 +94,38 @@ def main():
                 if voltage_gen is not None and voltage_shunt is not None:
                     current = voltage_shunt / RESISTOR_OHMS
                     power = voltage_gen * current
-                    total_energy += power 
-                    total_energy_wh = total_energy / 3600
-                    total_co2_g = total_energy_wh * G_CO2_PER_WH
+                    power_readings.append(power)
+                    total_energy += power  # accumulate energy every second
 
-                    total_co2_g = total_energy_wh  * G_CO2_PER_WH
-                    duration = time.time() - start_time
+                    if len(power_readings) == average_window:
+                        avg_power = sum(power_readings) / len(power_readings)
+                        total_energy_wh = total_energy / 3600
+                        total_co2_g = total_energy_wh * G_CO2_PER_WH
+                        duration = time.time() - start_time
 
-                    payload = {
-                        "studentId": student_id,
-                        "voltage": voltage_gen,
-                        "watts": power,
-                        "timestamp": datetime.now().isoformat(),
-                        "total_co2": total_co2_g,
-                        "generation_rate": (total_energy_wh * 3600 / duration) if duration > 0 else 0,
-                        "duration": duration
-                    }
+                        payload = {
+                            "studentId": student_id,
+                            "voltage": voltage_gen,
+                            "watts": avg_power,
+                            "timestamp": datetime.now().isoformat(),
+                            "total_co2": total_co2_g,
+                            "generation_rate": (total_energy_wh * 3600 / duration) if duration > 0 else 0,
+                            "duration": duration,
+                            "total_energy_wh": total_energy_wh
+                        }
 
-                    print(f"Sending payload: {json.dumps(payload)}")
-                    try:
-                        requests.post(SERVER_URL, json=payload)
-                    except Exception as e:
-                        print(f"Failed to send live data: {e}")
+                        print(f"[{student_id}] Sending 5s average payload: {json.dumps(payload)}")
+                        try:
+                            requests.post(SERVER_URL, json=payload)
+                        except Exception as e:
+                            print(f"Failed to send live data: {e}")
+
+                        power_readings.clear()
+
                 else:
                     print("Warning: Voltage read returned None")
 
-                time.sleep(1)
+                time.sleep(reading_interval)
 
     except serial.SerialException as e:
         print(f"Serial Error: {e}")
@@ -133,16 +141,20 @@ def main():
     }
 
     try:
-        summary_collection.update_one(
-            {"studentId": student_id},
-            {"$inc": {
-                "totalWatts": summary["totalWatts"],
-                "totalCO2": summary["totalCO2"],
-                "duration": summary["duration"]
-            }},
+        # ✅ Save session to 'Users' collection, cumulative
+        users_collection.update_one(
+            {"S_ID": student_id},
+            {
+                "$inc": {
+                    "totalWatts": summary["totalWatts"],
+                    "totalCO2": summary["totalCO2"],
+                    "duration": summary["duration"]
+                }
+            },
             upsert=True
         )
 
+        # ✅ Optional: log session to Session collection
         readings_collection.insert_one({
             "studentId": student_id,
             "sessionId": session_id,

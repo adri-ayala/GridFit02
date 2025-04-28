@@ -26,11 +26,11 @@ export default function Admin() {
   }, []);
 
   const totalUsers = users.length;
-  const totalTimeSpent = users.reduce((sum, user) => sum + user.duration, 0);
+  const totalTimeSpent = users.reduce((sum, user) => sum + (user.duration || 0), 0);
   const averageTimePerUser = totalUsers ? totalTimeSpent / totalUsers : 0;
-  const totalCO2Saved = users.reduce((sum, user) => sum + user.totalCO2, 0);
+  const totalCO2Saved = users.reduce((sum, user) => sum + (user.totalCO2 || 0), 0);
   const averageCO2Saved = totalUsers ? totalCO2Saved / totalUsers : 0;
-  const totalWattsGenerated = users.reduce((sum, user) => sum + user.totalWatts, 0);
+  const totalWattsGenerated = users.reduce((sum, user) => sum + (user.totalWatts || 0), 0);
   const averageWattsGenerated = totalUsers ? totalWattsGenerated / totalUsers : 0;
 
   return (
@@ -61,7 +61,6 @@ export default function Admin() {
         </button>
       </div>
 
-      {/* Tab Content */}
       {activeTab === "userStats" && (
         <div>
           {loading ? (
@@ -73,24 +72,27 @@ export default function Admin() {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full table-auto border border-gray-600">
-                <thead className="bg-gray-800">
-                  <tr>
-                    <th className="px-4 py-2 border border-gray-700">Student ID</th>
-                    <th className="px-4 py-2 border border-gray-700">Total Watts</th>
-                    <th className="px-4 py-2 border border-gray-700">Total CO₂</th>
-                    <th className="px-4 py-2 border border-gray-700">Duration</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((user) => (
+              <thead className="bg-gray-800">
+                <tr>
+                  <th className="px-4 py-2 border border-gray-700">Rank</th>
+                  <th className="px-4 py-2 border border-gray-700">Student ID</th>
+                  <th className="px-4 py-2 border border-gray-700">Total Energy Generated</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...users]
+                  .sort((a, b) => (b.totalWatts ?? 0) - (a.totalWatts ?? 0))
+                  .map((user, index) => (
                     <tr key={user.studentId} className="text-center">
+                      <td className="px-4 py-2 border border-gray-700">{index + 1}</td>
                       <td className="px-4 py-2 border border-gray-700">{user.studentId}</td>
-                      <td className="px-4 py-2 border border-gray-700">{user.totalWatts} Wh</td>
-                      <td className="px-4 py-2 border border-gray-700">{user.totalCO2.toFixed(4)} g</td>
-                      <td className="px-4 py-2 border border-gray-700">{user.duration} sec</td>
+                      <td className="px-4 py-2 border border-gray-700">
+                        {user.totalWatts !== undefined ? user.totalWatts.toFixed(2) : "0.00"} Wh
+                      </td>
                     </tr>
                   ))}
-                </tbody>
+              </tbody>
+
               </table>
             </div>
           )}
@@ -124,11 +126,11 @@ export default function Admin() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-gray-900 p-4 rounded">
                 <h3 className="text-lg">Total CO₂ Saved</h3>
-                <p className="text-2xl font-bold">{totalCO2Saved.toFixed(4)} kg</p>
+                <p className="text-2xl font-bold">{totalCO2Saved.toFixed(4)} g</p>
               </div>
               <div className="bg-gray-900 p-4 rounded">
                 <h3 className="text-lg">Avg CO₂ Saved</h3>
-                <p className="text-2xl font-bold">{averageCO2Saved.toFixed(4)} kg</p>
+                <p className="text-2xl font-bold">{averageCO2Saved.toFixed(4)} g</p>
               </div>
             </div>
           </div>

@@ -83,11 +83,12 @@ app.get("/api/userstats/:id", checkDbConnection, async (req, res) => {
 
 // ✅ POST: Receive live data from DAQ.py
 app.post("/api/student/live-data", (req, res) => {
-  const { studentId, voltage, watts, timestamp, total_co2, generation_rate, duration } = req.body;
+  const { studentId, voltage, watts, timestamp, total_co2, generation_rate, duration, total_energy_wh } = req.body;
 
   if (!studentId || watts === undefined) {
     return res.status(400).json({ error: "Invalid data format." });
   }
+  console.log("Incoming body:", req.body);
 
   const payload = {
     studentId,
@@ -96,7 +97,8 @@ app.post("/api/student/live-data", (req, res) => {
     timestamp: timestamp || new Date().toISOString(),
     total_co2: total_co2 || 0,
     generation_rate: generation_rate || 0,
-    duration: duration || 0
+    duration: duration || 0,
+    total_energy_wh: total_energy_wh || 0
   };
 
   console.log("Broadcasting live data:", payload);

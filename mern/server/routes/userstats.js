@@ -3,7 +3,10 @@ import { getDb } from "../db/connection.js";
 
 const router = express.Router();
 
-// 📊 Fetch weekly or basic user data (from Users collection)
+/**
+ * @route GET /userstats/:id
+ * @desc Fetch weekly or basic user data (from Users collection)
+ */
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -24,7 +27,10 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// 🧮 Fetch cumulative user stats (from UserStats collection)
+/**
+ * @route GET /userstats/summary/:studentId
+ * @desc Fetch cumulative user stats (from UserStats collection)
+ */
 router.get("/summary/:studentId", async (req, res) => {
   const { studentId } = req.params;
   const db = getDb();
@@ -40,7 +46,10 @@ router.get("/summary/:studentId", async (req, res) => {
   }
 });
 
-// 📁 Fetch session history (optional)
+/**
+ * @route GET /userstats/sessions/:studentId
+ * @desc Fetch session history (from Session collection)
+ */
 router.get("/sessions/:studentId", async (req, res) => {
   const { studentId } = req.params;
   const db = getDb();
@@ -57,7 +66,5 @@ router.get("/sessions/:studentId", async (req, res) => {
     res.status(500).json({ error: "Failed to retrieve sessions." });
   }
 });
-
-
 
 export default router;

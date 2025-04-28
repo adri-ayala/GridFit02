@@ -39,6 +39,8 @@ export default function UserStats() {
   const [generationRate, setGenerationRate] = useState(0);
   const [duration, setDuration] = useState(0);
   const [daqState, setDaqState] = useState("stopped"); // "running" | "stopped"
+  const [totalEnergyWh, setTotalEnergyWh] = useState(0);
+
 
   useEffect(() => {
     async function fetchWeeklyData() {
@@ -60,6 +62,8 @@ export default function UserStats() {
 
   useEffect(() => {
     const handleLiveData = (data) => {
+      console.log("🛰️ Live data received:", data); // optional debug
+      setTotalEnergyWh(data.total_energy_wh || 0); // ✅ THIS LINE
       setLiveVoltage(data.voltage || null);
       setLiveWatts(data.watts);
       setLiveTimestamp(new Date().toLocaleTimeString());
@@ -68,14 +72,15 @@ export default function UserStats() {
       setDuration(data.duration || 0);
       setDaqState("running");
     };
-
+  
     socket.on("liveData", handleLiveData);
     socket.on("disconnect", () => setDaqState("stopped"));
-
+  
     return () => {
       socket.off("liveData", handleLiveData);
     };
   }, []);
+  
   const handleLogout = async () => {
     try {
       const res = await fetch("http://localhost:5050/api/login/logout", {
@@ -177,15 +182,15 @@ export default function UserStats() {
           </div>
         </div>
 
-        <div className="w-1/3 bg-gray-800 p-4 rounded-lg shadow-lg text-white text-lg ml-4">
-          <h2 className="text-xl mb-4">Live Stats</h2>
-          <p>CO₂ Saved: {totalCO2 ? totalCO2.toFixed(4) : "0.0000"} g</p>
-          <p>Generation Rate: {generationRate ? generationRate.toFixed(2) : "0.00"} W</p>
-          <p>Duration: {Math.floor(duration / 60)}m {Math.floor(duration % 60)}s</p>
-          <p>Voltage: {liveVoltage !== null ? `${liveVoltage.toFixed(3)} V` : "N/A"}</p>
-          <p>Watts: {liveWatts !== null ? `${liveWatts.toFixed(3)} W` : "N/A"}</p>
-          <p>Last Update: {liveTimestamp || "N/A"}</p>
-        </div>
+      <div className="w-1/3 bg-gray-800 p-4 rounded-lg shadow-lg text-white text-lg ml-4">
+        <h2 className="text-xl mb-4">Live Stats</h2>
+        <p>Total Energy Generated: {totalEnergyWh ? totalEnergyWh.toFixed(2) : "0.00"} Wh</p>
+        <p>CO₂ Saved: {totalCO2 ? totalCO2.toFixed(4) : "0.0000"} g</p>
+        <p>Generation Rate: {generationRate ? generationRate.toFixed(2) : "0.00"} W</p>
+        <p>Duration: {Math.floor(duration / 60)}m {Math.floor(duration % 60)}s</p>
+        <p>Last Update: {liveTimestamp || "N/A"}</p>
+      </div>
+
       </div>
     </div>
   );

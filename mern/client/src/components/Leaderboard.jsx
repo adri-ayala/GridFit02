@@ -24,12 +24,12 @@ export default function Leaderboard() {
     fetchLeaderboard();
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <div>Loading...</div>;
 
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  if (!Array.isArray(leaderboard)) {
+    return <div className="text-white text-center mt-20">Invalid leaderboard data.</div>;
   }
 
   return (
@@ -65,12 +65,12 @@ export default function Leaderboard() {
             <tbody>
               {leaderboard.map((user, index) => (
                 <tr
-                  key={user.studentId}
+                  key={user.S_ID || index}
                   className={index % 2 === 0 ? "bg-[#555555]" : "bg-[#444444]"}
                 >
                   <td className="px-4 py-2">{index + 1}</td>
-                  <td className="px-4 py-2">{user.studentId}</td>
-                  <td className="px-4 py-2">{user.totalWatts} Watts</td>
+                  <td className="px-4 py-2">{user.S_ID || "N/A"}</td>
+                  <td className="px-4 py-2">{user.totalWatts ?? 0} Watts</td>
                 </tr>
               ))}
             </tbody>
