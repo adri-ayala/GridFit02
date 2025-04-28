@@ -23,16 +23,7 @@ GridFit is a full-stack web application designed to track power generation sessi
 - **Admin Dashboard** with cumulative metrics
 - **MongoDB Integration** for storing sessions and user stats
 
----
 
-## 🛠️ Tech Stack
-
-| Frontend | Backend | Database | Hardware |
-|:--------:|:-------:|:--------:|:--------:|
-| React.js | Node.js, Express.js | MongoDB Atlas | DI-1100 DAQ Device |
-| Chart.js | WebSocket (Socket.IO) | Mongoose | Shunt Resistor |
-
----
 
 ## ⚙️ Setup Instructions
 
@@ -99,6 +90,7 @@ Admins can view:
 - Total CO₂ saved
 - Average session durations
 - Top users via Leaderboard
+  
 
 ---
 
