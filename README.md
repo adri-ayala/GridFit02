@@ -95,27 +95,7 @@ Admins can view:
 ---
 
 ## ✨ Future Improvements
-
-- Authentication for Admin accounts
 - Weekly and monthly statistics
 - User profile pages
-- Advanced DAQ device support
 - Mobile version of dashboard
 
----
-
-## 📚 License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
-# 👨‍💻 Made with passion by [Your Name]
-
----
-
----
-  
-Would you also like me to **format it even cooler** with some badges (like `React`, `Node.js`, `MongoDB`, etc.) if you want it to look even more polished? 🚀  
-I can also **generate a version with screenshots** if you want to show off your app! 📸  
-Want me to? 🎯
